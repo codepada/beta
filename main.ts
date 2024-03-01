@@ -4,7 +4,7 @@
 //% color=#E7734B icon="\uf2db"
 namespace sensor {
     //external button
-    export enum buttonChannel {
+    export enum ForcesensorChannel {
         //% block="A (P20)"
         A,
         //% block="E (P16)"
@@ -16,16 +16,16 @@ namespace sensor {
         //% block="H (P8)"
         H,
     }
-    export let buttonChannels: { [key: number]: DigitalPin } = {
-        [buttonChannel.A]: DigitalPin.P20,
-        [buttonChannel.E]: DigitalPin.P16,
-        [buttonChannel.F]: DigitalPin.P14,
-        [buttonChannel.G]: DigitalPin.P2,
-        [buttonChannel.H]: DigitalPin.P8,
+    export let ForcesensorChannels: { [key: number]: DigitalPin } = {
+        [ForcesensorChannel.A]: DigitalPin.P20,
+        [ForcesensorChannel.E]: DigitalPin.P16,
+        [ForcesensorChannel.F]: DigitalPin.P14,
+        [ForcesensorChannel.G]: DigitalPin.P2,
+        [ForcesensorChannel.H]: DigitalPin.P8,
     }
 
     //external sensor
-    export enum sensorChannel {
+    export enum SensorChannel {
         //% block="P1"
         P1,
         //% block="P8"
@@ -43,35 +43,35 @@ namespace sensor {
         //% block="P16"
         P16,
     }
-    export let sensorChannels: { [key: number]: DigitalPin } = {
-        [sensorChannel.P1]: DigitalPin.P1,
-        [sensorChannel.P8]: DigitalPin.P8,
-        [sensorChannel.P12]: DigitalPin.P12,
-        [sensorChannel.P2]: DigitalPin.P2,
-        [sensorChannel.P13]: DigitalPin.P13,
-        [sensorChannel.P14]: DigitalPin.P14,
-        [sensorChannel.P15]: DigitalPin.P15,
-        [sensorChannel.P16]: DigitalPin.P16,
+    export let SensorChannels: { [key: number]: DigitalPin } = {
+        [SensorChannel.P1]: DigitalPin.P1,
+        [SensorChannel.P8]: DigitalPin.P8,
+        [SensorChannel.P12]: DigitalPin.P12,
+        [SensorChannel.P2]: DigitalPin.P2,
+        [SensorChannel.P13]: DigitalPin.P13,
+        [SensorChannel.P14]: DigitalPin.P14,
+        [SensorChannel.P15]: DigitalPin.P15,
+        [SensorChannel.P16]: DigitalPin.P16,
     }
     //----------------------------------
-    export let sensorAnalogChannels: { [key: number]: AnalogPin } = {
-        [sensorChannel.P1]: AnalogPin.P1,
-        [sensorChannel.P8]: AnalogPin.P8,
-        [sensorChannel.P12]: AnalogPin.P12,
-        [sensorChannel.P2]: AnalogPin.P2,
-        [sensorChannel.P13]: AnalogPin.P13,
-        [sensorChannel.P14]: AnalogPin.P14,
-        [sensorChannel.P15]: AnalogPin.P15,
-        [sensorChannel.P16]: AnalogPin.P16,
+    export let SensorAnalogChannels: { [key: number]: AnalogPin } = {
+        [SensorChannel.P1]: AnalogPin.P1,
+        [SensorChannel.P8]: AnalogPin.P8,
+        [SensorChannel.P12]: AnalogPin.P12,
+        [SensorChannel.P2]: AnalogPin.P2,
+        [SensorChannel.P13]: AnalogPin.P13,
+        [SensorChannel.P14]: AnalogPin.P14,
+        [SensorChannel.P15]: AnalogPin.P15,
+        [SensorChannel.P16]: AnalogPin.P16,
     }
 
     //----------------------------------
     //% color=#000000
     //% block="read button $pin (0-1)"
     //% group="Read Sensor"
-    export function Readbutton(pin: buttonChannel): number {
-        let read = buttonChannels[pin];
-        pins.setPull(buttonChannels[pin], PinPullMode.PullUp);
+    export function Readbutton(pin: ForcesensorChannel): number {
+        let read = ForcesensorChannels[pin];
+        pins.setPull(ForcesensorChannels[pin], PinPullMode.PullUp);
         let reading = pins.digitalReadPin(read);
         return (reading);
     }
@@ -82,8 +82,8 @@ namespace sensor {
     //% color=#000000    
     //% block="analog Sensor $pin (0-1023) "
     //% group="Read Sensor"
-    export function lightSensor(pin: sensorChannel): number {
-        let read = sensorAnalogChannels[pin];
+    export function lightSensor(pin: SensorChannel): number {
+        let read = SensorAnalogChannels[pin];
         let reading = pins.analogReadPin(read);
         return Math.round(reading);
     }
@@ -91,33 +91,27 @@ namespace sensor {
     //% color=#000000    
     //% block="digital Sensor $pin (0-1)"
     //% group="Read Sensor"
-    export function Sensor(pin: sensorChannel): number {
-        let read = sensorChannels[pin];
+    export function Sensor(pin: SensorChannel): number {
+        let read = SensorChannels[pin];
         let reading = pins.digitalReadPin(read);
         return (reading);
     }
 
 
-    function signal_dht11(pin: DigitalPin): void {
-        pins.digitalWritePin(pin, 0);
-        basic.pause(18);
-        let i = pins.digitalReadPin(pin);
-        pins.setPull(pin, PinPullMode.PullUp);
-    }
 
 
     //% color=#383838
     //% block="track Line $pin Black Color"
     //% group="Logic Sensor"
-    export function isblack(pin: sensorChannel): boolean {
-        let read = sensorChannels[pin];
+    export function isblack(pin: SensorChannel): boolean {
+        let read = SensorChannels[pin];
         return pins.digitalReadPin(read) == 1;
     }
     //% color=#636262
     //% block="track Line $pin Not Black"
     //% group="Logic Sensor"
-    export function notblack(pin: sensorChannel): boolean {
-        let read = sensorChannels[pin];
+    export function notblack(pin: SensorChannel): boolean {
+        let read = SensorChannels[pin];
         return pins.digitalReadPin(read) == 0;
     }
 
@@ -125,77 +119,52 @@ namespace sensor {
     //% color=#3D3430    
     //% block="on button $pin pressed"
     //% group="Logic Sensor"
-    export function isButtonPressed(pin: buttonChannel): boolean {
-        pins.setPull(buttonChannels[pin], PinPullMode.PullUp);
-        let read = buttonChannels[pin];
+    export function isButtonPressed(pin: ForcesensorChannel): boolean {
+        pins.setPull(ForcesensorChannels[pin], PinPullMode.PullUp);
+        let read = ForcesensorChannels[pin];
         return pins.digitalReadPin(read) == 0;
     }
 
-    //% color=#76dbb1
-    //sonar
-    //% block="sonar %channel unit %unit"
-    //% group="ect"
-    //% unit.defl=PingUnit.Centimeters
-    export function ping(channel: sonarPort, unit: pingUnit, maxCmDistance = 500): number {
-        let trig = trigChanel[channel];
-        let echo = echoChanel[channel];
-        // send pulse
-        pins.setPull(trig, PinPullMode.PullNone);
-        pins.digitalWritePin(trig, 0);
-        control.waitMicros(2);
-        pins.digitalWritePin(trig, 1);
-        control.waitMicros(10);
-        pins.digitalWritePin(trig, 0);
 
-        // read pulse
-        const d = pins.pulseIn(echo, PulseValue.High, maxCmDistance * 58);
-
-        switch (unit) {
-            case pingUnit.Centimeters: return Math.idiv(d, 58);
-            case pingUnit.Inches: return Math.idiv(d, 148);
-            default: return d;
-        }
-    }
-
-    export enum pingUnit {
-        //% block="μs"
-        MicroSeconds,
+    //sonar sensor 
+    export enum PingUnit {
         //% block="cm"
         Centimeters,
+        //% block="μs"
+        MicroSeconds,
         //% block="inches"
         Inches
     }
-    export enum sonarPort {
-        //% block="E [ trig(P16) echo(P15) ]"
+    export enum SonarPort {
+        //% block="E [trig(P16) echo(P15)]"
         E,
-        //% block="F [ trig(P14) echo(P13) ]"
+        //% block="F [trig(P14) echo(P13)]"
         F,
-        //% block="G [ trig(P2) echo(P12) ]"
+        //% block="G [trig(P2) echo(P12)]"
         G,
-        //% block="H [ trig(P8) echo(P1) ]"
+        //% block="H [trig(P8) echo(P1)]"
         H,
     }
-    export let trigChanel: { [key: number]: DigitalPin } = {
-        [sonarPort.E]: DigitalPin.P16,
-        [sonarPort.F]: DigitalPin.P14,
-        [sonarPort.G]: DigitalPin.P2,
-        [sonarPort.H]: DigitalPin.P8,
+    export let TrigChanel: { [key: number]: DigitalPin } = {
+        [SonarPort.E]: DigitalPin.P16,
+        [SonarPort.F]: DigitalPin.P14,
+        [SonarPort.G]: DigitalPin.P2,
+        [SonarPort.H]: DigitalPin.P8,
     }
-    export let echoChanel: { [key: number]: DigitalPin } = {
-        [sonarPort.E]: DigitalPin.P15,
-        [sonarPort.F]: DigitalPin.P13,
-        [sonarPort.G]: DigitalPin.P12,
-        [sonarPort.H]: DigitalPin.P1,
+    export let EchoChanel: { [key: number]: DigitalPin } = {
+        [SonarPort.E]: DigitalPin.P15,
+        [SonarPort.F]: DigitalPin.P13,
+        [SonarPort.G]: DigitalPin.P12,
+        [SonarPort.H]: DigitalPin.P1,
     }
 
     //% color=#76dbb1
+    //% unit.delf=PingUnit.Centimeters
+    //% block="sonar %channel unit %unit"
     //% group="ect"
-    //% blockId=sensor_ping block="ultrasonic trig %trig|echo %echo|get distance %unit"
-    //% trig.fieldEditor="gridpicker" trig.fieldOptions.columns=4
-    //% trig.fieldOptions.tooltips="false" trig.fieldOptions.width="300"
-    //% echo.fieldEditor="gridpicker" echo.fieldOptions.columns=4
-    //% echo.fieldOptions.tooltips="false" echo.fieldOptions.width="300"
-    export function sensor_ping(trig: DigitalPin, echo: DigitalPin, unit: pingUnit, maxCmDistance = 500): number {
+    export function gigoping(channel: SonarPort, unit: PingUnit, maxCmDistance = 500): number {
+        let trig = TrigChanel[channel];
+        let echo = EchoChanel[channel];
         // send pulse
         pins.setPull(trig, PinPullMode.PullNone);
         pins.digitalWritePin(trig, 0);
@@ -206,10 +175,9 @@ namespace sensor {
 
         // read pulse
         const d = pins.pulseIn(echo, PulseValue.High, maxCmDistance * 58);
-
         switch (unit) {
-            case pingUnit.Centimeters: return d / 58;
-            case pingUnit.Inches: return d / 148;
+            case PingUnit.Centimeters: return Math.idiv(d, 58);
+            case PingUnit.Inches: return Math.idiv(d, 148);
             default: return d;
         }
     }
@@ -219,11 +187,9 @@ namespace sensor {
 
 
 //% color=#E7734B icon="\uf48b"
-//% groups="['Motor','Servo','Led', 'Read Sensor','Logic Sensor','I2C LCD 1602']"
-namespace motor {
-    // motor control
-    //servo180
-    export enum servoChannel {
+namespace motorGiGo {
+
+    export enum ServoChannel {
         //% block="P1"
         P1,
         //% block="P8"
@@ -241,19 +207,19 @@ namespace motor {
         //% block="P16"
         P16,
     }
-    export let servoChannels: { [key: number]: AnalogPin } = {
-        [servoChannel.P1]: AnalogPin.P1,
-        [servoChannel.P8]: AnalogPin.P8,
-        [servoChannel.P12]: AnalogPin.P12,
-        [servoChannel.P2]: AnalogPin.P2,
-        [servoChannel.P13]: AnalogPin.P13,
-        [servoChannel.P14]: AnalogPin.P14,
-        [servoChannel.P15]: AnalogPin.P15,
-        [servoChannel.P16]: AnalogPin.P16,
+    export let ServoChannels: { [key: number]: AnalogPin } = {
+        [ServoChannel.P1]: AnalogPin.P1,
+        [ServoChannel.P8]: AnalogPin.P8,
+        [ServoChannel.P12]: AnalogPin.P12,
+        [ServoChannel.P2]: AnalogPin.P2,
+        [ServoChannel.P13]: AnalogPin.P13,
+        [ServoChannel.P14]: AnalogPin.P14,
+        [ServoChannel.P15]: AnalogPin.P15,
+        [ServoChannel.P16]: AnalogPin.P16,
     }
     //----------------------------------
 
-    export enum servoconChannel {
+    export enum ServoconChannel {
         //% block="P1"
         P1,
         //% block="P8"
@@ -271,17 +237,19 @@ namespace motor {
         //% block="P16"
         P16,
     }
-    export let servoconChannels: { [key: number]: AnalogPin } = {
-        [servoconChannel.P1]: AnalogPin.P1,
-        [servoconChannel.P8]: AnalogPin.P8,
-        [servoconChannel.P12]: AnalogPin.P12,
-        [servoconChannel.P2]: AnalogPin.P2,
-        [servoconChannel.P13]: AnalogPin.P13,
-        [servoconChannel.P14]: AnalogPin.P14,
-        [servoconChannel.P15]: AnalogPin.P15,
-        [servoconChannel.P16]: AnalogPin.P16,
+
+    export let ServoconChannels: { [key: number]: AnalogPin } = {
+        [ServoconChannel.P1]: AnalogPin.P1,
+        [ServoconChannel.P8]: AnalogPin.P8,
+        [ServoconChannel.P12]: AnalogPin.P12,
+        [ServoconChannel.P2]: AnalogPin.P2,
+        [ServoconChannel.P13]: AnalogPin.P13,
+        [ServoconChannel.P14]: AnalogPin.P14,
+        [ServoconChannel.P15]: AnalogPin.P15,
+        [ServoconChannel.P16]: AnalogPin.P16,
     }
-    export enum svconShaft {
+
+    export enum SvconShaft {
         //% block="Right"
         Right = 0,
         //% block="Left"
@@ -289,13 +257,15 @@ namespace motor {
         //% block="Stop"
         Stop = 90,
     }
-    export let degreesCon: { [key: number]: number } = {
-        [svconShaft.Right]: 0,
-        [svconShaft.Left]: 180,
-        [svconShaft.Stop]: 90,
+
+    export let DegreesCon: { [key: number]: number } = {
+        [SvconShaft.Right]: 0,
+        [SvconShaft.Left]: 180,
+        [SvconShaft.Stop]: 90,
 
     }
-    export enum motorChannel {
+
+    export enum MotorChannel {
         //% block="E (P15,P16)"
         E,
         //% block="F (P13,P14)""
@@ -305,31 +275,35 @@ namespace motor {
         //% block="H (P1,P8)""
         H,
     }
-    export enum motorShaftDirection {
+
+    export enum MotorShaftDirection {
         //% block="Left"
         LOW,
         //% block="Right"
         HIGH,
     }
-    export let motorSpeedPins: { [key: number]: AnalogPin } = {
-        [motorChannel.E]: AnalogPin.P16,
-        [motorChannel.F]: AnalogPin.P14,
-        [motorChannel.G]: AnalogPin.P2,
-        [motorChannel.H]: AnalogPin.P8,
+
+    export let MotorSpeedPins: { [key: number]: AnalogPin } = {
+        [MotorChannel.E]: AnalogPin.P16,
+        [MotorChannel.F]: AnalogPin.P14,
+        [MotorChannel.G]: AnalogPin.P2,
+        [MotorChannel.H]: AnalogPin.P8,
     }
-    export let motorChannels: { [key: number]: DigitalPin } = {
-        [motorChannel.E]: DigitalPin.P15,
-        [motorChannel.F]: DigitalPin.P13,
-        [motorChannel.G]: DigitalPin.P12,
-        [motorChannel.H]: DigitalPin.P1,
+
+    export let MotorChannels: { [key: number]: DigitalPin } = {
+        [MotorChannel.E]: DigitalPin.P15,
+        [MotorChannel.F]: DigitalPin.P13,
+        [MotorChannel.G]: DigitalPin.P12,
+        [MotorChannel.H]: DigitalPin.P1,
     }
+
     //% color=#E7734B
-    //% direction.defl=motorShaftDirection.HIGH
+    //% direction.defl=MotorShaftDirection.HIGH
     //% block="stop motor $channel"
     //% group="Motor"
-    export function motorStop1(channel: motorChannel): void {
-        let dirPin = motorChannels[channel];
-        let speedPin = motorSpeedPins[channel];
+    export function motorStop(channel: MotorChannel): void {
+        let dirPin = MotorChannels[channel];
+        let speedPin = MotorSpeedPins[channel];
         pins.digitalWritePin(dirPin, 0);
         pins.analogWritePin(speedPin, 0);
     }
@@ -341,10 +315,9 @@ namespace motor {
     //% direction.min=0 direction.max=1
     //% group="Motor"
     //% color=#E7734B
-    export function motorControl1(channel: motorChannel, direction: number, speed: number): void {
-        let dirPin = motorChannels[channel];
-        let speedPin = motorSpeedPins[channel];
-
+    export function motorControlone(channel: MotorChannel, direction: number, speed: number): void {
+        let dirPin = MotorChannels[channel];
+        let speedPin = MotorSpeedPins[channel];
         pins.digitalWritePin(dirPin, direction);
         pins.analogWritePin(speedPin, pins.map(speed, 0, 255, 0, 1023));
     }
@@ -353,40 +326,44 @@ namespace motor {
     //% block="motor $channel direction $direction speed $speed"
     //% speed.min=0 speed.max=255
     //% speed.defl=100
-    //% direction.defl=motorShaftDirection.HIGH
+    //% direction.defl=MotorShaftDirection.HIGH
     //% group="Motor"
     //% color=#E7734B
-    export function motorControl2(channel: motorChannel, direction: motorShaftDirection, speed: number): void {
-        let dirPin = motorChannels[channel];
-        let speedPin = motorSpeedPins[channel];
-
+    export function motorControltwo(channel: MotorChannel, direction: MotorShaftDirection, speed: number): void {
+        let dirPin = MotorChannels[channel];
+        let speedPin = MotorSpeedPins[channel];
         pins.digitalWritePin(dirPin, direction);
         pins.analogWritePin(speedPin, pins.map(speed, 0, 255, 0, 1023));
     }
+
     //% color=#E84E19
     //% block"servo180 $pinSmini degrees $degrees"
     //% degrees.min=20 degrees.max=160
     //% degrees.defl=90
     //% group="Servo"
-    export function MiniServo(pinSmini: servoChannel, degrees: number): void {
-        let pinsmini = servoChannels[pinSmini];
+    export function miniServo(pinSmini: ServoChannel, degrees: number): void {
+        let pinsmini = ServoChannels[pinSmini];
         pins.servoWritePin(pinsmini, degrees);
 
     }
+
     //% color=#E84E19
     //% block"continuous Servo $pinSV direction $direction"
-    //% direction.defl=90
+    //% direction.defl=Stop
     //% group="Servo"
-    export function ContinuousServo(pinSV: servoChannel, direction: svconShaft): void {
-        let pinservo = servoChannels[pinSV];
+    export function montinuousServo(pinSV: ServoChannel, direction: SvconShaft): void {
+        let pinservo = ServoChannels[pinSV];
         pins.servoWritePin(pinservo, direction);
 
     }
 }
+
+
+
 //% weight=5 color=#E7734B icon="\uf110"
 namespace gigoLED {
-    //led
-    export enum lEDChannel {
+
+    export enum LEDChannel {
         //% block="A (P19)"
         A,
         //% block="B (P14)"
@@ -404,17 +381,17 @@ namespace gigoLED {
         //% block="H (P1)"
         H,
     }
-    export let lEDChannels: { [key: number]: DigitalPin } = {
-        [lEDChannel.A]: DigitalPin.P19,
-        [lEDChannel.B]: DigitalPin.P14,
-        [lEDChannel.C]: DigitalPin.P2,
-        [lEDChannel.D]: DigitalPin.P8,
-        [lEDChannel.E]: DigitalPin.P15,
-        [lEDChannel.F]: DigitalPin.P13,
-        [lEDChannel.G]: DigitalPin.P12,
-        [lEDChannel.H]: DigitalPin.P1,
+    export let LEDChannels: { [key: number]: DigitalPin } = {
+        [LEDChannel.A]: DigitalPin.P19,
+        [LEDChannel.B]: DigitalPin.P14,
+        [LEDChannel.C]: DigitalPin.P2,
+        [LEDChannel.D]: DigitalPin.P8,
+        [LEDChannel.E]: DigitalPin.P15,
+        [LEDChannel.F]: DigitalPin.P13,
+        [LEDChannel.G]: DigitalPin.P12,
+        [LEDChannel.H]: DigitalPin.P1,
     }
-    export enum lEDShaftonoff {
+    export enum LEDShaftonoff {
         //% block="off"
         LOW,
         //% block="on"
@@ -423,45 +400,44 @@ namespace gigoLED {
     }
 
 
+    //% block="led $pin Status $status"
     //% color=#FACB09
-    //% block="led $leds Status $Status"
-    //% Status.min=0 Status.max=1
-    //% leds.defl=lEDChannel.D
-    //% group="Led"
-    export function ledtest(leds: lEDChannel, Status: number): void {
-        let ledg = lEDChannels[leds];
+    //% status.min=0 Status.max=1
+    //% pin.defl=LEDChannel.D
+    export function LedGigoone(pin: LEDChannel, status: number): void {
+        let led = LEDChannels[pin];
 
-        pins.digitalWritePin(ledg, Status);
+        pins.digitalWritePin(led, status);
 
     }
 
     //% color=#FACB09
-    //% block="led $leds Status $Status"
-    //% Status.defl=lEDShaftonoff.HIGH*
-    //% leds.defl=lEDChannel.D
-    //% group="Led"
-    export function led(leds: lEDChannel, Status: lEDShaftonoff): void {
-        let ledg = lEDChannels[leds];
+    //% block="led $pin Status $status"
+    //% status.defl=LEDShaftonoff.HIGH
+    //% pin.defl=LEDChannel.D
 
-        pins.digitalWritePin(ledg, Status);
+    export function LedGigotwo(pin: LEDChannel, status: LEDShaftonoff): void {
+        let led = LEDChannels[pin];
+
+        pins.digitalWritePin(led, status);
 
     }
+
     //% color=#FACB09
-    //toggle led
-    //% blockId=led block="led %pin $ledstate"
+    //% block="led %pin $ledstate"
     //% ledstate.shadow="toggleOnOff"
     //% expandableArgumentMode="toggle"
-    //% pin.defl=lEDChannel.D
-    //% group="Led"
-    export function ledBrightness(pin: lEDChannel, ledstate: boolean): void {
+    //% pin.defl=LEDChannel.D
+
+    export function LedGigothree(pin: LEDChannel, ledstate: boolean): void {
         if (ledstate) {
-            let pinled = lEDChannels[pin];
-            pins.digitalWritePin(pinled, 1);
+            let led = LEDChannels[pin];
+            pins.digitalWritePin(led, 1);
 
         }
         else {
-            let pinled = lEDChannels[pin];
-            pins.digitalWritePin(pinled, 0);
+            let led = LEDChannels[pin];
+            pins.digitalWritePin(led, 0);
 
         }
     }
@@ -756,7 +732,7 @@ namespace joystick {
 
     //---------------------------------------------------
     //% group="GHBit"
-    //% blockId=ghBit_Rocker block="rocker|value %value"
+    //% block="rocker|value %value"
     //% weight=96
     //% blockGap=10
     //% color="#C814B8"
@@ -769,20 +745,20 @@ namespace joystick {
         let z = pins.digitalReadPin(DigitalPin.P8);
         let now_state = enRocker.Nostate;
 
-        if (x < 200) {
+        if (x < 300) {
 
             now_state = enRocker.Up;
 
         }
-        else if (x > 730) {
+        else if (x > 760) {
 
             now_state = enRocker.Down;
         }
         else {
-            if (y < 200) {
+            if (y < 300) {
                 now_state = enRocker.Right;
             }
-            else if (y > 730) {
+            else if (y > 600) {
                 now_state = enRocker.Left;
             }
         }
@@ -795,7 +771,7 @@ namespace joystick {
 
     }
     //% group="GHBit"
-    //% blockId=ghBit_Button block="button| %num|value %value"
+    //% block="button| %num|value %value"
     //% weight=95
     //% blockGap=10
     //% color="#C814B8"
@@ -852,4 +828,4 @@ namespace joystick {
 }
 
 
-//-----------------------------------
+
